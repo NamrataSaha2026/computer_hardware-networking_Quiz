@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Computer Hardware Quiz | ITI IT Trade Project</title>
+<style>
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    font-family:'Segoe UI', Arial, sans-serif;
+    background:linear-gradient(160deg,#0f2027,#203a43,#2c5364);
+    color:#f1f5f9;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+  }
+  .card{
+    background:#111827;
+    border-radius:20px;
+    max-width:640px;
+    width:100%;
+    padding:32px;
+    box-shadow:0 20px 50px rgba(0,0,0,.5);
+  }
+  h1{
+    text-align:center;
+    font-size:1.6rem;
+    margin-top:0;
+    background:linear-gradient(90deg,#38bdf8,#818cf8);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .progress-bar{
+    background:#1f2937;
+    border-radius:10px;
+    height:10px;
+    overflow:hidden;
+    margin-bottom:24px;
+  }
+  .progress-fill{
+    height:100%;
+    background:linear-gradient(90deg,#38bdf8,#818cf8);
+    width:0%;
+    transition:width .3s;
+  }
+  #quizArea .question{
+    font-size:1.15rem;
+    font-weight:bold;
+    margin-bottom:20px;
+    line-height:1.5;
+  }
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .option-btn{
+    background:#1f2937;
+    border:2px solid #374151;
+    color:#e5e7eb;
+    padding:14px 18px;
+    border-radius:12px;
+    text-align:left;
+    font-size:1rem;
+    cursor:pointer;
+    transition:all .15s;
+  }
+  .option-btn:hover{border-color:#38bdf8;}
+  .option-btn.correct{background:#065f46;border-color:#10b981;}
+  .option-btn.wrong{background:#7f1d1d;border-color:#ef4444;}
+  .option-btn:disabled{cursor:not-allowed;}
+
+  .footer-row{
+    display:flex;
+    justify-content:space-between;
+    margin-top:22px;
+    align-items:center;
+  }
+  #scoreDisplay{font-weight:bold;color:#38bdf8;}
+  .next-btn{
+    background:linear-gradient(90deg,#38bdf8,#818cf8);
+    border:none;
+    color:#0f172a;
+    padding:10px 22px;
+    border-radius:10px;
+    font-weight:bold;
+    cursor:pointer;
+    display:none;
+  }
+
+  #resultArea{
+    text-align:center;
+    display:none;
+  }
+  #resultArea h2{font-size:1.8rem;color:#38bdf8;}
+  #resultArea p{font-size:1.1rem;color:#cbd5e1;}
+  .restart-btn{
+    margin-top:16px;
+    background:linear-gradient(90deg,#38bdf8,#818cf8);
+    border:none;
+    color:#0f172a;
+    padding:12px 26px;
+    border-radius:10px;
+    font-weight:bold;
+    cursor:pointer;
+    font-size:1rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h1>🖥️ Computer Hardware &amp; Networking Quiz</h1>
+
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+  <div id="quizArea">
+    <div class="question" id="questionText"></div>
+    <div class="options" id="optionsArea"></div>
+    <div class="footer-row">
+      <span id="scoreDisplay">Score: 0 / 0</span>
+      <button class="next-btn" id="nextBtn">Next ➜</button>
+    </div>
+  </div>
+
+  <div id="resultArea">
+    <h2>🎉 Quiz Completed!</h2>
+    <p id="finalScoreText"></p>
+    <button class="restart-btn" id="restartBtn">Play Again</button>
+  </div>
+</div>
+
+<script>
+  // ---------- Question bank (based on PC Hardware / Networking / OS syllabus) ----------
+  const questions = [
+    {
+      q: "Which component is considered the 'brain' of a computer?",
+      options: ["RAM", "CPU", "Hard Disk", "Power Supply"],
+      answer: 1
+    },
+    {
+      q: "RAM in a computer is used for:",
+      options: ["Permanent storage", "Temporary storage while running", "Cooling the CPU", "Powering the monitor"],
+      answer: 1
+    },
+    {
+      q: "Which device connects multiple computers within a Local Area Network (LAN)?",
+      options: ["Modem", "Switch", "UPS", "Scanner"],
+      answer: 1
+    },
+    {
+      q: "What does 'IP' stand for in IP Address?",
+      options: ["Internal Program", "Internet Protocol", "Input Process", "Interface Port"],
+      answer: 1
+    },
+    {
+      q: "Which of these is a Solid State storage device?",
+      options: ["HDD", "SSD", "CD-ROM", "Floppy Disk"],
+      answer: 1
+    },
+    {
+      q: "Which operating system tool is used to divide a hard disk into partitions?",
+      options: ["Task Manager", "Disk Management", "Control Panel Fonts", "Device Cleanup"],
+      answer: 1
+    },
+    {
+      q: "Which of the following is an Operating System?",
+      options: ["MS Word", "Linux", "Google Chrome", "Photoshop"],
+      answer: 1
+    },
+    {
+      q: "A device that protects a computer from sudden power failure is called:",
+      options: ["UPS", "Router", "Switch", "Modem"],
+      answer: 0
+    },
+    {
+      q: "Which port/connector is commonly used to connect a monitor to a computer?",
+      options: ["USB Type-C only", "HDMI/VGA", "RJ11", "PS/2 only"],
+      answer: 1
+    },
+    {
+      q: "Cloud Computing mainly allows users to:",
+      options: [
+        "Store and access data over the internet",
+        "Increase CPU clock speed physically",
+        "Replace all hardware components",
+        "Only play offline games"
+      ],
+      answer: 0
+    }
+  ];
+
+  let currentIndex = 0;
+  let score = 0;
+
+  const questionText = document.getElementById("questionText");
+  const optionsArea = document.getElementById("optionsArea");
+  const scoreDisplay = document.getElementById("scoreDisplay");
+  const nextBtn = document.getElementById("nextBtn");
+  const progressFill = document.getElementById("progressFill");
+  const quizArea = document.getElementById("quizArea");
+  const resultArea = document.getElementById("resultArea");
+  const finalScoreText = document.getElementById("finalScoreText");
+  const restartBtn = document.getElementById("restartBtn");
+
+  function loadQuestion(){
+    const current = questions[currentIndex];
+    questionText.textContent = (currentIndex + 1) + ". " + current.q;
+    optionsArea.innerHTML = "";
+    nextBtn.style.display = "none";
+
+    current.options.forEach((opt, idx)=>{
+      const btn = document.createElement("button");
+      btn.className = "option-btn";
+      btn.textContent = opt;
+      btn.addEventListener("click", ()=> selectAnswer(idx));
+      optionsArea.appendChild(btn);
+    });
+
+    scoreDisplay.textContent = "Score: " + score + " / " + questions.length;
+    progressFill.style.width = ((currentIndex) / questions.length * 100) + "%";
+  }
+
+  function selectAnswer(selectedIdx){
+    const current = questions[currentIndex];
+    const buttons = optionsArea.querySelectorAll(".option-btn");
+    buttons.forEach(b => b.disabled = true);
+
+    if(selectedIdx === current.answer){
+      buttons[selectedIdx].classList.add("correct");
+      score++;
+    } else {
+      buttons[selectedIdx].classList.add("wrong");
+      buttons[current.answer].classList.add("correct");
+    }
+    scoreDisplay.textContent = "Score: " + score + " / " + questions.length;
+    nextBtn.style.display = "inline-block";
+  }
+
+  nextBtn.addEventListener("click", ()=>{
+    currentIndex++;
+    if(currentIndex < questions.length){
+      loadQuestion();
+    } else {
+      showResult();
+    }
+  });
+
+  function showResult(){
+    quizArea.style.display = "none";
+    resultArea.style.display = "block";
+    progressFill.style.width = "100%";
+    const percent = Math.round((score / questions.length) * 100);
+    finalScoreText.textContent = "You scored " + score + " out of " + questions.length + " (" + percent + "%)";
+  }
+
+  restartBtn.addEventListener("click", ()=>{
+    currentIndex = 0;
+    score = 0;
+    quizArea.style.display = "block";
+    resultArea.style.display = "none";
+    loadQuestion();
+  });
+
+  // ---------- Start quiz ----------
+  loadQuestion();
+</script>
+
+</body>
+</html>
